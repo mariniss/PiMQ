@@ -1,0 +1,15 @@
+.idea
+PiMQ-Client/.idea
+PiMQ-Client/target
+PiMQ-Server/.idea
+PiMQ-Server/target
+PiMQ-Shared/.idea
+PiMQ-Shared/target
+PiMQ-WebApp/.classpath
+PiMQ-WebApp/.project
+PiMQ-WebApp/.settings
+PiMQ-WebApp/plugins
+PiMQ-WebApp/target
+PiMQ-WebApp/wrapper
+pimq.iml
+target

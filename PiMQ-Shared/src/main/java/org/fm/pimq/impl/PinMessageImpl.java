@@ -15,14 +15,14 @@
  */
 package org.fm.pimq.impl;
 
-import org.fm.pimq.AbstractPinCommand;
+import org.fm.pimq.AbstractPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
 
 /**
  * @author Fabio Marini
  */
-public class PinCommandImpl extends AbstractPinCommand {
+public class PinMessageImpl extends AbstractPinMessage {
 
     /**
      * Serial number, necessary to serialize the objects
@@ -34,7 +34,7 @@ public class PinCommandImpl extends AbstractPinCommand {
      * @param pin the raspberry pin
      * @param state the pin status
      */
-    public PinCommandImpl(PinMQ pin, PinStateMQ state) {
+    public PinMessageImpl(PinMQ pin, PinStateMQ state) {
         setPin(pin);
         setState(state);
     }

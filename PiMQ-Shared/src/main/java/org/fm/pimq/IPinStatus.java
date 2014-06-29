@@ -15,22 +15,24 @@
  */
 package org.fm.pimq;
 
+import java.io.Serializable;
+
 /**
- * This interface defines a generic command that you can send to Raspberry Pi
+ * This interface defines a generic status of a Raspberry Pi
  *
  * @author Fabio Marini
  */
-public interface IPinCommand   {
+public interface IPinStatus extends Serializable {
 
     /**
-     * Sets the pin of command
-     * @param pin the raspberry pin
+     * Returns the pin identifier
+     * @return the raspberry pin
      */
-    public void setPin(PinMQ pin);
+    PinMQ getPin();
 
     /**
-     * Sets the state of command
-     * @param state the pin state
+     * Return the pin state
+     * @return the pin state
      */
-    public void setState(PinStateMQ state);
+    PinStateMQ getState();
 }

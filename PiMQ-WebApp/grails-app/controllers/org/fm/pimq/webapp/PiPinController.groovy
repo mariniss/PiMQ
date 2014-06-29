@@ -18,10 +18,10 @@ package org.fm.pimq.webapp
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.commons.lang.NotImplementedException;
-import org.fm.pimq.IPinCommand;
+import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
-import org.fm.pimq.impl.PinCommandImpl
+import org.fm.pimq.impl.PinMessageImpl
 
 import javax.jms.*;
 import javax.ws.rs.FormParam;
@@ -66,8 +66,8 @@ class PiPinController {
 //			MessageProducer producer = session.createProducer(destination);
 //			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 //
-//			//IPinCommand command = new PinCommandImpl(RaspiPin.GPIO_01, PinState.HIGH);
-//			IPinCommand command = new PinCommandImpl(pipin.pin, pipin.state);
+//			//IPinMessage command = new PinMessageImpl(RaspiPin.GPIO_01, PinState.HIGH);
+//			IPinMessage command = new PinMessageImpl(pipin.pin, pipin.state);
 //
 //			ObjectMessage message = session.createObjectMessage(command);
 //
@@ -112,8 +112,8 @@ class PiPinController {
 			MessageProducer producer = session.createProducer(destination);
 			//producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-			//IPinCommand command = new PinCommandImpl(RaspiPin.GPIO_01, PinState.HIGH);
-			IPinCommand command = new PinCommandImpl(new PinMQ(Integer.valueOf(params.pinNumber)), (Integer.valueOf(params.pinState) == 0) ? PinStateMQ.LOW : PinStateMQ.HIGH);
+			//IPinMessage command = new PinMessageImpl(RaspiPin.GPIO_01, PinState.HIGH);
+			IPinMessage command = new PinMessageImpl(new PinMQ(Integer.valueOf(params.pinNumber)), (Integer.valueOf(params.pinState) == 0) ? PinStateMQ.LOW : PinStateMQ.HIGH);
 
 			ObjectMessage message = session.createObjectMessage(command);
 

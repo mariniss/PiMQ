@@ -15,21 +15,17 @@
  */
 package org.fm.pimq.server.impl;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.RedeliveryPolicy;
 import org.apache.commons.lang.NotImplementedException;
-import org.fm.pimq.IPinCommand;
+import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
-import org.fm.pimq.impl.PinCommandImpl;
+import org.fm.pimq.impl.PinMessageImpl;
 import org.fm.pimq.server.IPiPinService;
 import org.fm.pimq.server.dataobject.PiPin;
 import org.fm.pimq.server.helpers.PiPinServiceHelper;
 import org.fm.pimq.server.helpers.PiPinServiceResponseHelper;
 
-import javax.jms.*;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -54,7 +50,7 @@ public class PiPinServiceImpl implements IPiPinService {
     public Response setPinState(@FormParam("piPinId") int piPinId, @FormParam("state") int state) {
         try {
 
-            IPinCommand command = new PinCommandImpl(new PinMQ(piPinId), (state == 0) ? PinStateMQ.LOW : PinStateMQ.HIGH);
+            IPinMessage command = new PinMessageImpl(new PinMQ(piPinId), (state == 0) ? PinStateMQ.LOW : PinStateMQ.HIGH);
             PiPinServiceHelper.getDefaultInstance().sendCommand(command);
 
             return PiPinServiceResponseHelper.getDefaultInstance().buildResponse(Response.Status.OK);

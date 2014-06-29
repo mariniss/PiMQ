@@ -17,10 +17,10 @@ package org.fm.pimq.server.helpers;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
-import org.fm.pimq.IPinCommand;
+import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
-import org.fm.pimq.impl.PinCommandImpl;
+import org.fm.pimq.impl.PinMessageImpl;
 
 import javax.jms.*;
 
@@ -69,7 +69,7 @@ public class PiPinServiceHelper {
      * @param pinCommand
      * @throws JMSException
      */
-    public void sendCommand(IPinCommand pinCommand) throws JMSException {
+    public void sendCommand(IPinMessage pinCommand) throws JMSException {
         sendCommand(pinCommand, DEFAULT_ENDPOINT);
     }
 
@@ -78,7 +78,7 @@ public class PiPinServiceHelper {
      * @param endpoint
      * @throws JMSException
      */
-    public void sendCommand(IPinCommand pinCommand, String endpoint) throws JMSException {
+    public void sendCommand(IPinMessage pinCommand, String endpoint) throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(endpoint);
         RedeliveryPolicy policy = new RedeliveryPolicy();
         policy.setInitialRedeliveryDelay(1000L);

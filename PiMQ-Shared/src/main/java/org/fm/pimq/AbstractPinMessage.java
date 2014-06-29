@@ -16,11 +16,11 @@
 package org.fm.pimq;
 
 /**
- * Base implementation of {@link IPinCommand}
+ * Base implementation of {@link IPinMessage}
  *
  * @author Fabio Marini
  */
-public abstract class AbstractPinCommand implements IPinCommand {
+public abstract class AbstractPinMessage implements IPinMessage {
 
     /**
      * The raspberry pint to send/receive command
@@ -36,7 +36,7 @@ public abstract class AbstractPinCommand implements IPinCommand {
     /*
      * (non-Javadoc)
      *
-     * @see org.fm.pimq.IPinCommand#getPin()
+     * @see org.fm.pimq.IPinMessage#getPin()
      */
     @Override
     public PinMQ getPin() {
@@ -46,25 +46,29 @@ public abstract class AbstractPinCommand implements IPinCommand {
     /*
      * (non-Javadoc)
      *
-     * @see org.fm.pimq.IPinCommand#getState()
+     * @see org.fm.pimq.IPinMessage#getState()
      */
     @Override
     public PinStateMQ getState() {
         return this.state;
     }
 
-    /**
-     * Sets the pin of this command
-     * @param pin the raspberry pin
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.fm.pimq.IPinMessage#setPin()
      */
+    @Override
     public void setPin(PinMQ pin) {
         this.pin = pin;
     }
 
-    /**
-     * Sets the state of this command
-     * @param state the pin state
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.fm.pimq.IPinMessage#setStateg()
      */
+    @Override
     public void setState(PinStateMQ state) {
         this.state = state;
     }

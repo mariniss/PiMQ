@@ -17,10 +17,10 @@ package org.fm.pimq.server;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
-import org.fm.pimq.IPinCommand;
+import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
-import org.fm.pimq.impl.PinCommandImpl;
+import org.fm.pimq.impl.PinMessageImpl;
 
 import javax.jms.*;
 
@@ -67,8 +67,8 @@ public class PiMQServer {
                 MessageProducer producer = session.createProducer(destination);
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-                //IPinCommand command = new PinCommandImpl(RaspiPin.GPIO_01, PinState.HIGH);
-                IPinCommand command = new PinCommandImpl(new PinMQ(1), PinStateMQ.LOW);
+                //IPinMessage command = new PinMessageImpl(RaspiPin.GPIO_01, PinState.HIGH);
+                IPinMessage command = new PinMessageImpl(new PinMQ(1), PinStateMQ.LOW);
 
                 ObjectMessage message = session.createObjectMessage(command);
 

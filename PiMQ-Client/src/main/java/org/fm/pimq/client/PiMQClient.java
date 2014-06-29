@@ -19,7 +19,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 
 import com.pi4j.io.gpio.*;
-import org.fm.pimq.IPinCommand;
+import org.fm.pimq.IPinMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,8 +110,8 @@ public class PiMQClient {
                     // Wait for a message
                     Message message = consumer.receive();
 
-                    if (((ActiveMQObjectMessage) message).getObject() instanceof IPinCommand) {
-                        IPinCommand commandMessage = (IPinCommand) ((ActiveMQObjectMessage) message).getObject();
+                    if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
+                        IPinMessage commandMessage = (IPinMessage) ((ActiveMQObjectMessage) message).getObject();
 
                         StringBuilder errorMsg = new StringBuilder();
                         if(isValidCommand(commandMessage, errorMsg)){
@@ -124,7 +124,7 @@ public class PiMQClient {
                         }
 
                     } else {
-                        logger.error("Received JMS messages that is not a IPinCommand. Main loop ended");
+                        logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
                         break;
                     }
                 }
@@ -144,7 +144,7 @@ public class PiMQClient {
          * @param errorMsg the error message, if is not valid
          * @return true if the message is valid, false otherwise
          */
-        private boolean isValidCommand(IPinCommand commandMessage, StringBuilder errorMsg) {
+        private boolean isValidCommand(IPinMessage commandMessage, StringBuilder errorMsg) {
             if(commandMessage == null) {
                 errorMsg.append("Null command");
                 return false;
@@ -178,7 +178,7 @@ public class PiMQClient {
          *
          * @param commandMessage the command to execute
          */
-        private synchronized void executeCommand(IPinCommand commandMessage) {
+        private synchronized void executeCommand(IPinMessage commandMessage) {
             Pin pipin = null;
 
             switch (commandMessage.getPin().getPinNumber()) {

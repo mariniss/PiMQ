@@ -18,15 +18,20 @@ package org.fm.pimq;
 import java.io.Serializable;
 
 /**
+ * Identifies a Raspberry Pi.
+ * It is used to send information about the pin through a JMS queue
  * @author Fabio Marini
  */
 public class PinMQ implements Serializable {
 
     /**
-     *
+     * Its serial numbers
      */
     private static final long serialVersionUID = 1895758079842050410L;
 
+    /**
+     * The pin identifier, must be from 1 to 20
+     */
     private Integer pinNumber;
 
     /**
@@ -37,8 +42,8 @@ public class PinMQ implements Serializable {
     }
 
     /**
-     *
-     * @param pinNumber
+     * Build the object with the given pin number identifier (from 1 to 20)
+     * @param pinNumber the pin number
      */
     public PinMQ(Integer pinNumber) {
         this();
@@ -47,10 +52,18 @@ public class PinMQ implements Serializable {
     }
 
 
+    /**
+     * Returns the pin identifier (from 1 to 20)
+     * @return the pin number identifier
+     */
     public Integer getPinNumber() {
         return pinNumber;
     }
 
+    /**
+     * Sets the pin identifier
+     * @param pinNumber the identifier, must be from 1 to 20.
+     */
     public void setPinNumber(Integer pinNumber) {
         this.pinNumber = pinNumber;
     }

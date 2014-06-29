@@ -16,21 +16,7 @@
 package org.fm.pimq;
 
 /**
- * This interface defines a generic command that you can send to Raspberry Pi
- *
  * @author Fabio Marini
  */
-public interface IPinCommand   {
-
-    /**
-     * Sets the pin of command
-     * @param pin the raspberry pin
-     */
-    public void setPin(PinMQ pin);
-
-    /**
-     * Sets the state of command
-     * @param state the pin state
-     */
-    public void setState(PinStateMQ state);
+public interface IPinMessage extends IPinStatus, IPinCommand {
 }

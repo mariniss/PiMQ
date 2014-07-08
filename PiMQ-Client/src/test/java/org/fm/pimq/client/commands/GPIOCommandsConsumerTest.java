@@ -15,10 +15,7 @@
  */
 package org.fm.pimq.client.commands;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.easymock.EasyMock;
 import org.fm.pimq.IPinMessage;
@@ -38,23 +35,22 @@ public class GPIOCommandsConsumerTest {
     private String url = "vm://localhost?broker.persistent=false";
 
     @Test
-    public void testMeasurment() {
-
+    public void testSendCommandHigh() {
         //Configuring mocks
 
         GpioController controllerMock = EasyMock.createNiceMock(GpioController.class);
         GpioPinDigitalOutput pinOutMock = EasyMock.createNiceMock(GpioPinDigitalOutput.class);
 
-        EasyMock.expect(controllerMock.provisionDigitalOutputPin(EasyMock.anyObject(Pin.class), EasyMock.anyString(), EasyMock.anyObject(PinState.class))).andReturn(pinOutMock);
+        EasyMock.expect(controllerMock.provisionDigitalOutputPin(RaspiPin.GPIO_01, "GPIO", PinState.LOW)).andReturn(pinOutMock);
 
-        pinOutMock.low();
+        pinOutMock.high();
         EasyMock.expectLastCall();
 
         EasyMock.replay(controllerMock, pinOutMock);
 
         //Sending messages to test
 
-        IPinMessage command = new PinMessageImpl(new PinMQ(1), PinStateMQ.LOW);
+        IPinMessage command = new PinMessageImpl(new PinMQ(1), PinStateMQ.HIGH);
         sendMessage(command);
 
         sendMessageToStop();
@@ -72,13 +68,53 @@ public class GPIOCommandsConsumerTest {
         }
 
         //Verifies tests results
+
+        EasyMock.verify(controllerMock);
+        EasyMock.verify(pinOutMock);
+    }
+
+    @Test
+    public void testSendCommandLow() {
+
+        //Configuring mocks
+
+        GpioController controllerMock = EasyMock.createNiceMock(GpioController.class);
+        GpioPinDigitalOutput pinOutMock = EasyMock.createNiceMock(GpioPinDigitalOutput.class);
+
+        EasyMock.expect(controllerMock.provisionDigitalOutputPin(RaspiPin.GPIO_10, "GPIO", PinState.LOW)).andReturn(pinOutMock);
+
+        pinOutMock.low();
+        EasyMock.expectLastCall();
+
+        EasyMock.replay(controllerMock, pinOutMock);
+
+        //Sending messages to test
+
+        IPinMessage command = new PinMessageImpl(new PinMQ(10), PinStateMQ.LOW);
+        sendMessage(command);
+
+        sendMessageToStop();
+
+        // Starting instance to test
+
+        GPIOCommandsConsumerForTest consumer = new GPIOCommandsConsumerForTest(url, jmsQueue, controllerMock);
+        Thread brokerThread = new Thread(consumer);
+        brokerThread.start();
+
+        try {
+            brokerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //Verifies tests results
+
         EasyMock.verify(controllerMock);
         EasyMock.verify(pinOutMock);
     }
 
     private void sendMessage(IPinMessage command) {
         try {
-
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
 
             QueueConnection queueConn = (QueueConnection) connectionFactory.createConnection();

@@ -83,6 +83,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
         this(connectionUrl, queueName, false);
     }
 
+    @Override
     public void run() {
         try {
 

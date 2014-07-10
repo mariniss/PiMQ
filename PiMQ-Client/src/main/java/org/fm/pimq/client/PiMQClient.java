@@ -16,6 +16,7 @@
 package org.fm.pimq.client;
 
 import org.fm.pimq.client.commands.GPIOCommandsConsumer;
+import org.fm.pimq.client.states.GPIOStatesProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +57,17 @@ public class PiMQClient {
 
         String commandsQueueName = DEFAULT_COMMAND_QUEUE_IDENTIFIER;
         if(args.length > 2){
-            connectionUrl = args[2];
+            commandsQueueName = args[2];
+        }
+
+        String statusQueueName = DEFAULT_STATES_QUEUE_IDENTIFIER;
+        if(args.length > 3){
+            statusQueueName = args[3];
         }
 
         thread(new GPIOCommandsConsumer(connectionUrl, commandsQueueName), false);
 
-        //TODO: add the thread to reads and sends GPIO states
+        thread(new GPIOStatesProducer(connectionUrl, statusQueueName), false);
     }
 
     /**

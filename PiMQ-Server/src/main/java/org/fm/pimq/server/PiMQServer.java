@@ -25,7 +25,7 @@ import org.fm.pimq.impl.PinMessageImpl;
 import javax.jms.*;
 
 /**
- * Created by fabiomarini on 17/06/14.
+ * @author Fabio Marini
  */
 public class PiMQServer {
 
@@ -46,7 +46,7 @@ public class PiMQServer {
     public static class GPIOMessagesProducer implements Runnable {
         public void run() {
             try {
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.1.1:61616");
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://127.0.0.1:15005");
                 RedeliveryPolicy policy = new RedeliveryPolicy();
                 policy.setInitialRedeliveryDelay(1000L);
                 policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
@@ -61,13 +61,12 @@ public class PiMQServer {
                 Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
                 // Create the destination (Topic or Queue)
-                Destination destination = session.createQueue("GPIO.Commands");
+                Destination destination = session.createQueue("PiMQ.GPIO.Commands");
 
                 // Create a MessageProducer from the Session to the Topic or Queue
                 MessageProducer producer = session.createProducer(destination);
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-                //IPinMessage command = new PinMessageImpl(RaspiPin.GPIO_01, PinState.HIGH);
                 IPinMessage command = new PinMessageImpl(new PinMQ(1), PinStateMQ.LOW);
 
                 ObjectMessage message = session.createObjectMessage(command);

@@ -105,8 +105,9 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
             MessageConsumer consumer = session.createConsumer(destination);
 
             logger.info(" Starting main loop ");
+            System.out.print(" Starting main loop ");
 
-            for (; ; ) {
+            for ( ; ; ) {
 
                 // Wait for a message
                 Message message = consumer.receive();
@@ -117,14 +118,18 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
                     StringBuilder errorMsg = new StringBuilder();
                     if (isValidCommand(commandMessage, errorMsg)) {
                         logger.debug("Received: " + commandMessage.getPin().getPinNumber() + " : " + commandMessage.getState().name());
+                        System.out.print("Received: " + commandMessage.getPin().getPinNumber() + " : " + commandMessage.getState().name());
 
                         executeCommand(commandMessage);
                     } else {
                         logger.error("Received invalid command : " + errorMsg.toString());
+                        System.out.print("Received invalid command : " + errorMsg.toString());
                     }
 
                 } else {
                     logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
+                    System.out.print("Received JMS messages that is not a IPinMessage. Main loop ended");
+
                     break;
                 }
             }
@@ -135,6 +140,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
         } catch (Exception e) {
             logger.error("Caught: " + e);
+            System.out.print("Caught: " + e);
         }
     }
 
@@ -271,9 +277,11 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
                 }
             } else {
                 logger.warn("No GpioPinDigitalOutput found the the pin " + pipin.getName());
+                System.out.print("No GpioPinDigitalOutput found the the pin " + pipin.getName());
             }
         } else {
             logger.warn("No RaspiPin found for the pin number " + commandMessage.getPin().getPinNumber());
+            System.out.print("No RaspiPin found for the pin number " + commandMessage.getPin().getPinNumber());
         }
 
     }
@@ -286,5 +294,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
     @Override
     public void onException(JMSException exception) {
         logger.error("JMS Exception occurred.  Shutting down client.");
+        System.out.print("JMS Exception occurred.  Shutting down client.");
+        exception.printStackTrace();
     }
 }

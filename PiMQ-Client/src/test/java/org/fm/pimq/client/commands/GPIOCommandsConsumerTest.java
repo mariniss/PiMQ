@@ -27,6 +27,7 @@ import org.junit.Test;
 import javax.jms.*;
 
 /**
+ * Test class for {@link GPIOCommandsConsumer}
  * @author Fabio Marini
  */
 public class GPIOCommandsConsumerTest {

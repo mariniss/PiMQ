@@ -16,6 +16,8 @@
 package org.fm.pimq.client;
 
 import org.fm.pimq.client.commands.GPIOCommandsConsumer;
+import org.fm.pimq.client.conf.Configuration;
+import org.fm.pimq.client.conf.ConfigurationProvider;
 import org.fm.pimq.client.states.GPIOStatesProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +30,6 @@ import org.slf4j.LoggerFactory;
  * @author Fabio Marini
  */
 public class PiMQClient {
-
-    protected static final String DEFAULT_CONNECTION_STRING = "tcp://localhost:61616";
-
-    protected static  final String DEFAULT_COMMAND_QUEUE_IDENTIFIER = "PiMQ.GPIO.Commands";
-
-    protected static  final String DEFAULT_STATES_QUEUE_IDENTIFIER = "PiMQ.GPIO.States";
 
     /**
      * The default logger
@@ -49,25 +45,18 @@ public class PiMQClient {
      * @throws Exception for all kinds of errors
      */
     public static void main(String[] args) throws Exception {
+        logger.info("Starting PiMQClient");
+        System.out.print("Starting PiMQClient");
 
-        String connectionUrl = DEFAULT_CONNECTION_STRING;
-        if(args.length > 1){
-            connectionUrl = args[1];
+        Configuration configuration = ConfigurationProvider.getInstance().getConfiguration(null, null);
+
+        if(configuration.isEnableCommandsMessages()) {
+            thread(new GPIOCommandsConsumer(configuration.getConnectionUrl(), configuration.getCommandsQueueName()), false);
         }
 
-        String commandsQueueName = DEFAULT_COMMAND_QUEUE_IDENTIFIER;
-        if(args.length > 2){
-            commandsQueueName = args[2];
+        if(configuration.isEnableStatesMessages()) {
+            thread(new GPIOStatesProducer(configuration.getConnectionUrl(), configuration.getStatusQueueName()), false);
         }
-
-        String statusQueueName = DEFAULT_STATES_QUEUE_IDENTIFIER;
-        if(args.length > 3){
-            statusQueueName = args[3];
-        }
-
-        thread(new GPIOCommandsConsumer(connectionUrl, commandsQueueName), false);
-
-        thread(new GPIOStatesProducer(connectionUrl, statusQueueName), false);
     }
 
     /**
@@ -76,10 +65,8 @@ public class PiMQClient {
      * @param daemon true if will be a system deamon
      */
     public static void thread(Runnable runnable, boolean daemon) {
-        Thread brokerThread = new Thread(runnable);
-        brokerThread.setDaemon(daemon);
-        brokerThread.start();
+        Thread processThread = new Thread(runnable);
+        processThread.setDaemon(daemon);
+        processThread.start();
     }
-
-
 }

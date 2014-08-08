@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fm.pimq.client.conf;
+package org.fm.pimq.conf;
 
 /**
  * This class encapsulates all information necessary to configure PiMQ client
@@ -21,6 +21,8 @@ package org.fm.pimq.client.conf;
  * @author Fabio Marini
  */
 public class Configuration {
+
+    private String serverType;
 
     private String connectionUrl;
 
@@ -32,11 +34,23 @@ public class Configuration {
 
     private String statusQueueName;
 
+    private String username;
+
+    private String password;
+
     /**
      * Default constructor
      */
     public Configuration(){
 
+    }
+
+    public String getServerType() {
+        return serverType;
+    }
+
+    public void setServerType(String serverType) {
+        this.serverType = serverType;
     }
 
     public String getConnectionUrl() {
@@ -77,5 +91,38 @@ public class Configuration {
 
     public void setStatusQueueName(String statusQueueName) {
         this.statusQueueName = statusQueueName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "serverType='" + serverType + '\'' +
+                ", connectionUrl='" + connectionUrl + '\'' +
+                ", enableCommandsMessages=" + enableCommandsMessages +
+                ", commandsQueueName='" + commandsQueueName + '\'' +
+                ", isEnableStatesMessages=" + isEnableStatesMessages +
+                ", statusQueueName='" + statusQueueName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

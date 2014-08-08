@@ -15,99 +15,47 @@
  */
 package org.fm.pimq.server.helpers;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.RedeliveryPolicy;
 import org.fm.pimq.IPinMessage;
-import org.fm.pimq.PinMQ;
-import org.fm.pimq.PinStateMQ;
-import org.fm.pimq.impl.PinMessageImpl;
+import org.fm.pimq.conf.Configuration;
+import org.fm.pimq.net.IConnectionProviderStrategy;
 
 import javax.jms.*;
 
 /**
+ * Helper class to simplify {@link org.fm.pimq.server.IPiPinService} implementation
  * @author Fabio Marini
  */
 public class PiPinServiceHelper {
 
-    /****************************************************
-     * Singleton implementation - start
-     ****************************************************/
+    private IConnectionProviderStrategy connectionProviderStrategy;
 
     /**
-     *
+     * Send the given {@link IPinMessage} to the PiMQ command queue
+     * @param pinCommand the command to send
+     * @param conf the configuration to connect to the queue
+     * @throws JMSException if there are problems during the connection or the command communication
      */
-    private static PiPinServiceHelper instance = null;
+    public void sendCommand(IPinMessage pinCommand, Configuration conf) throws JMSException {
+        if(pinCommand!= null && conf != null) {
 
-    /**
-     *
-     */
-    private PiPinServiceHelper() {
+            Connection connection = connectionProviderStrategy.createConnection(conf);
+            connection.start();
 
-    }
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination destination = session.createQueue(conf.getCommandsQueueName());
 
-    public static synchronized PiPinServiceHelper getDefaultInstance() {
-        if (instance == null) {
-            synchronized (PiPinServiceHelper.class) {
-                if (instance == null) {
-                    instance = new PiPinServiceHelper();
-                }
-            }
+            MessageProducer producer = session.createProducer(destination);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+            ObjectMessage message = session.createObjectMessage(pinCommand);
+            producer.send(message);
+
+            session.close();
+            connection.close();
         }
-
-        return instance;
     }
 
-    /**
-     * *************************************************
-     * Singleton implementation - end
-     * **************************************************
-     */
-
-    public static final String DEFAULT_ENDPOINT = "tcp://localhost:61616";
-
-    /**
-     * @param pinCommand
-     * @throws JMSException
-     */
-    public void sendCommand(IPinMessage pinCommand) throws JMSException {
-        sendCommand(pinCommand, DEFAULT_ENDPOINT);
-    }
-
-    /**
-     * @param pinCommand
-     * @param endpoint
-     * @throws JMSException
-     */
-    public void sendCommand(IPinMessage pinCommand, String endpoint) throws JMSException {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(endpoint);
-        RedeliveryPolicy policy = new RedeliveryPolicy();
-        policy.setInitialRedeliveryDelay(1000L);
-        policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
-
-        connectionFactory.setRedeliveryPolicy(policy);
-        //connectionFactory.setUseRetroactiveConsumer(true);
-        Connection connection = connectionFactory.createConnection();
-
-        connection.start();
-
-        // Create a Session
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        // Create the destination (Topic or Queue)
-        Destination destination = session.createQueue("GPIO.Commands");
-
-        // Create a MessageProducer from the Session to the Topic or Queue
-        MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-        ObjectMessage message = session.createObjectMessage(pinCommand);
-
-        // Tell the producer to send the message
-        System.out.println("Sent message: " + message.hashCode() + " : " + Thread.currentThread().getName());
-        producer.send(message);
-
-        // Clean up
-        session.close();
-        connection.close();
+    public void setConnectionProviderStrategy(IConnectionProviderStrategy connectionProviderStrategy) {
+        this.connectionProviderStrategy = connectionProviderStrategy;
     }
 }

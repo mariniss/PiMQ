@@ -23,7 +23,10 @@ import org.apache.activemq.RedeliveryPolicy;
 import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
+import org.fm.pimq.conf.Configuration;
 import org.fm.pimq.impl.PinMessageImpl;
+import org.fm.pimq.net.ConnectionProvidersRepository;
+import org.fm.pimq.net.IConnectionProviderStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,28 +59,20 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
     protected Map<Pin, GpioPinDigitalInput> pinDigitalInputMap = new HashMap<>();
 
     /**
-     * URL to JMS server
+     *  Configuration instance
      */
-    protected String connectionUrl;
-
-    /**
-     * JMS queue name
-     */
-    protected String queueName;
+    protected Configuration configuration;
 
     protected Session session;
     protected MessageProducer producer;
 
     /**
      * Build the producer with the given attributes
-     *
-     * @param connectionUrl   the URL of JMS server
-     * @param queueName       the name of JMS queue
+     * @param configuration configuration object with all information necessary to connect to JMS server
      * @param instanceForTest flags that indicate if the created instance is used only to unit testing
      */
-    public GPIOStatesProducer(String connectionUrl, String queueName, boolean instanceForTest) {
-        this.connectionUrl = connectionUrl;
-        this.queueName = queueName;
+    public GPIOStatesProducer(Configuration configuration, boolean instanceForTest) {
+        this.configuration = configuration;
 
         if (!instanceForTest) {
             gpioController = GpioFactory.getInstance();
@@ -87,33 +82,35 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
     /**
      * Build the producer with the given attributes
      *
-     * @param connectionUrl the URL of JMS server
-     * @param queueName     the name of JMS queue
+     * @param configuration configuration object with all information necessary to connect to JMS server
      */
-    public GPIOStatesProducer(String connectionUrl, String queueName) {
-        this(connectionUrl, queueName, false);
+    public GPIOStatesProducer(Configuration configuration) {
+        this(configuration, false);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run() {
         try {
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(connectionUrl);
-            RedeliveryPolicy policy = new RedeliveryPolicy();
-            policy.setInitialRedeliveryDelay(1000L);
-            policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
+            if(configuration == null){
+                throw new IllegalArgumentException("Configuration cannot be null");
+            }
 
-            connectionFactory.setRedeliveryPolicy(policy);
-            Connection connection = connectionFactory.createConnection();
+            //TODO: Extend the strategy pattern to give the possibility to add RedeliveryPolicy whit decoratir pattern
+//            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(connectionUrl);
+//            RedeliveryPolicy policy = new RedeliveryPolicy();
+//            policy.setInitialRedeliveryDelay(1000L);
+//            policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
+//            connectionFactory.setRedeliveryPolicy(policy);
+
+            IConnectionProviderStrategy connectionProvider = ConnectionProvidersRepository.getConnectionStrategy(configuration.getServerType());
+            Connection connection = connectionProvider.createConnection(configuration);
 
             connection.start();
-
-            // Create a Session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // Create the destination (Topic or Queue)
-            Destination destination = session.createQueue(queueName);
+            Destination destination = session.createQueue(configuration.getStatusQueueName());
 
-            // Create a MessageProducer from the Session to the Topic or Queue
             producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
@@ -180,8 +177,6 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
         IPinMessage status = createStatusMessage(event.getPin(), event.getState());
         if(status != null) {
             ObjectMessage message = session.createObjectMessage(status);
-
-            // Tell the producer to send the message
             producer.send(message);
 
             logger.debug("Sent message: " + message.hashCode() + " : " + Thread.currentThread().getName());
@@ -213,11 +208,7 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.jms.ExceptionListener#onException()
-     */
+    /** {@inheritDoc} */
     @Override
     public void onException(JMSException exception) {
         logger.error("JMS Exception occurred.  Shutting down client.");

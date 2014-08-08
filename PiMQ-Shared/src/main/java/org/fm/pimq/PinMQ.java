@@ -18,7 +18,7 @@ package org.fm.pimq;
 import java.io.Serializable;
 
 /**
- * Identifies a Raspberry Pi.
+ * Identifies a Raspberry Pi pin.
  * It is used to send information about the pin through a JMS queue
  * @author Fabio Marini
  */

@@ -30,7 +30,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
-                            <mainClass>org.fm.pimq.server.PiMQServer</mainClass>
+                            <mainClass>org.fm.pimq.server.snipetet.PiMQServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -125,6 +125,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.7</version>
         </dependency>
     </dependencies>
 </project>

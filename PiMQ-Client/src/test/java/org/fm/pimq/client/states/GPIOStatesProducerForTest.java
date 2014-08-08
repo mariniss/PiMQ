@@ -16,7 +16,7 @@
 package org.fm.pimq.client.states;
 
 import com.pi4j.io.gpio.GpioController;
-import org.fm.pimq.client.commands.GPIOCommandsConsumer;
+import org.fm.pimq.conf.Configuration;
 
 /**
  * Extension to use mocks for Pi4J libraries
@@ -26,12 +26,11 @@ public class GPIOStatesProducerForTest extends GPIOStatesProducer {
 
     /**
      * Build the instance for the unit test
-     * @param connectionUrl JMS connection url
-     * @param queueName JMS queue name
+     * @param conf the JMS server configuraiton
      * @param controller GPIO controller (mock)
      */
-    public GPIOStatesProducerForTest(String connectionUrl, String queueName, GpioController controller) {
-        super(connectionUrl, queueName, true);
+    public GPIOStatesProducerForTest(Configuration conf, GpioController controller) {
+        super(conf, true);
 
         this.gpioController = controller;
     }

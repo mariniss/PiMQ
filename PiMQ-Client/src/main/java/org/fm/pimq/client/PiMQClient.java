@@ -16,8 +16,8 @@
 package org.fm.pimq.client;
 
 import org.fm.pimq.client.commands.GPIOCommandsConsumer;
-import org.fm.pimq.client.conf.Configuration;
-import org.fm.pimq.client.conf.ConfigurationProvider;
+import org.fm.pimq.conf.Configuration;
+import org.fm.pimq.conf.ConfigurationProvider;
 import org.fm.pimq.client.states.GPIOStatesProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +46,28 @@ public class PiMQClient {
      */
     public static void main(String[] args) throws Exception {
         logger.info("Starting PiMQClient");
-        System.out.print("Starting PiMQClient");
 
-        Configuration configuration = ConfigurationProvider.getInstance().getConfiguration(null, null);
+        String configDirectoryPath = null;
+        String configFileName = null;
+
+        if(args != null || args.length == 2)
+        {
+            configDirectoryPath = args[0];
+            configFileName = args[1];
+        }
+        else {
+            logger.warn("Program's arguments not found, using default configuration");
+        }
+
+        Configuration configuration = ConfigurationProvider.getInstance().getConfiguration(configDirectoryPath, configFileName);
+        logger.debug("Loaded configuration: {}", configuration);
 
         if(configuration.isEnableCommandsMessages()) {
-            thread(new GPIOCommandsConsumer(configuration.getConnectionUrl(), configuration.getCommandsQueueName()), false);
+            thread(new GPIOCommandsConsumer(configuration), false);
         }
 
         if(configuration.isEnableStatesMessages()) {
-            thread(new GPIOStatesProducer(configuration.getConnectionUrl(), configuration.getStatusQueueName()), false);
+            thread(new GPIOStatesProducer(configuration), false);
         }
     }
 

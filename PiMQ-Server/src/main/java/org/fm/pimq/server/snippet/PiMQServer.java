@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fm.pimq.server;
+package org.fm.pimq.server.snippet;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
@@ -46,24 +46,22 @@ public class PiMQServer {
     public static class GPIOMessagesProducer implements Runnable {
         public void run() {
             try {
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://127.0.0.1:15005");
+
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("ssl://amqsrvtwo-easyiotconnect.rhcloud.com:2303");
+
                 RedeliveryPolicy policy = new RedeliveryPolicy();
                 policy.setInitialRedeliveryDelay(1000L);
                 policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
 
                 connectionFactory.setRedeliveryPolicy(policy);
-                //connectionFactory.setUseRetroactiveConsumer(true);
-                Connection connection = connectionFactory.createConnection();
+
+                Connection connection = connectionFactory.createConnection("admin", "dsAMG-hcNehB");
 
                 connection.start();
 
-                // Create a Session
                 Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                // Create the destination (Topic or Queue)
                 Destination destination = session.createQueue("PiMQ.GPIO.Commands");
 
-                // Create a MessageProducer from the Session to the Topic or Queue
                 MessageProducer producer = session.createProducer(destination);
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
@@ -71,7 +69,6 @@ public class PiMQServer {
 
                 ObjectMessage message = session.createObjectMessage(command);
 
-                // Tell the producer to send the message
                 System.out.println("Sent message: " + message.hashCode() + " : " + Thread.currentThread().getName());
                 producer.send(message);
 

@@ -15,11 +15,13 @@
  */
 package org.fm.pimq.client.commands;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 
 import com.pi4j.io.gpio.*;
 import org.fm.pimq.IPinMessage;
+import org.fm.pimq.conf.Configuration;
+import org.fm.pimq.net.ConnectionProvidersRepository;
+import org.fm.pimq.net.IConnectionProviderStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,24 +52,17 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
     protected Map<Pin, GpioPinDigitalOutput> pinDigitalOutputMap = new HashMap<>();
 
     /**
-     *  URL to JMS server
+     *  Configuration instance
      */
-    protected String connectionUrl;
-
-    /**
-     * JMS queue name
-     */
-    protected String queueName;
+    protected Configuration configuration;
 
     /**
      * Build the consumer with the given attributes
-     * @param connectionUrl the URL of JMS server
-     * @param queueName the name of JMS queue
+     * @param configuration configuration object with all information necessary to connect to JMS server
      * @param instanceForTest flags that indicate if the created instance is used only to unit testing
      */
-    public GPIOCommandsConsumer(String connectionUrl, String queueName, boolean instanceForTest) {
-        this.connectionUrl = connectionUrl;
-        this.queueName = queueName;
+    public GPIOCommandsConsumer(Configuration configuration, boolean instanceForTest) {
+        this.configuration = configuration;
 
         if(!instanceForTest) {
             gpioController = GpioFactory.getInstance();
@@ -76,40 +71,34 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
     /**
      * Build the consumer with the given attributes
-     * @param connectionUrl the URL of JMS server
-     * @param queueName the name of JMS queue
+     * @param configuration configuration object with all information necessary to connect to JMS server
      */
-    public GPIOCommandsConsumer(String connectionUrl, String queueName) {
-        this(connectionUrl, queueName, false);
+    public GPIOCommandsConsumer(Configuration configuration) {
+        this(configuration, false);
     }
 
     @Override
     public void run() {
         try {
+            if(configuration == null){
+                throw new IllegalArgumentException("Configuration cannot be null");
+            }
 
-            // Create a ConnectionFactory
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(connectionUrl);
+            IConnectionProviderStrategy connectionProvider = ConnectionProvidersRepository.getConnectionStrategy(configuration.getServerType());
+            Connection connection = connectionProvider.createConnection(configuration);
 
-            // Create a Connection
-            Connection connection = connectionFactory.createConnection();
             connection.start();
             connection.setExceptionListener(this);
 
-            // Create a Session
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // Create the destination (Topic or Queue)
-            Destination destination = session.createQueue(queueName);
+            Destination destination = session.createQueue(configuration.getCommandsQueueName());
 
-            // Create a MessageConsumer from the Session to the Topic or Queue
             MessageConsumer consumer = session.createConsumer(destination);
 
             logger.info(" Starting main loop ");
-            System.out.print(" Starting main loop ");
 
             for ( ; ; ) {
-
-                // Wait for a message
                 Message message = consumer.receive();
 
                 if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
@@ -118,18 +107,14 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
                     StringBuilder errorMsg = new StringBuilder();
                     if (isValidCommand(commandMessage, errorMsg)) {
                         logger.debug("Received: " + commandMessage.getPin().getPinNumber() + " : " + commandMessage.getState().name());
-                        System.out.print("Received: " + commandMessage.getPin().getPinNumber() + " : " + commandMessage.getState().name());
 
                         executeCommand(commandMessage);
                     } else {
                         logger.error("Received invalid command : " + errorMsg.toString());
-                        System.out.print("Received invalid command : " + errorMsg.toString());
                     }
 
                 } else {
                     logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
-                    System.out.print("Received JMS messages that is not a IPinMessage. Main loop ended");
-
                     break;
                 }
             }
@@ -140,7 +125,6 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
         } catch (Exception e) {
             logger.error("Caught: " + e);
-            System.out.print("Caught: " + e);
         }
     }
 
@@ -277,20 +261,14 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
                 }
             } else {
                 logger.warn("No GpioPinDigitalOutput found the the pin " + pipin.getName());
-                System.out.print("No GpioPinDigitalOutput found the the pin " + pipin.getName());
             }
         } else {
             logger.warn("No RaspiPin found for the pin number " + commandMessage.getPin().getPinNumber());
-            System.out.print("No RaspiPin found for the pin number " + commandMessage.getPin().getPinNumber());
         }
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.jms.ExceptionListener#onException()
-     */
+    /** {@inheritDoc} */
     @Override
     public void onException(JMSException exception) {
         logger.error("JMS Exception occurred.  Shutting down client.");

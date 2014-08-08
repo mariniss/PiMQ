@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fm.pimq.client.commands;
+package org.fm.pimq.net;
 
-import com.pi4j.io.gpio.GpioController;
 import org.fm.pimq.conf.Configuration;
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
+
 /**
- * Extension to use mocks for Pi4J libraries
+ * Interface to define the connection provider strategy
  * @author Fabio Marini
  */
-public class GPIOCommandsConsumerForTest extends GPIOCommandsConsumer {
+public interface IConnectionProviderStrategy {
 
     /**
-     * Build the instance for the unit test
-     * @param conf the JMS server configuraiton
-     * @param controller GPIO controller (mock)
+     * Create the connection with the JMS server
+     * @param conf the configuration object
+     * @return the connection instance
+     * @throws JMSException if there are problems during the connection or the command communication
      */
-    public GPIOCommandsConsumerForTest(Configuration conf, GpioController controller) {
-        super(conf, true);
-
-        this.gpioController = controller;
-    }
+    Connection createConnection(Configuration conf) throws JMSException;
 }

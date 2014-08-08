@@ -16,10 +16,12 @@
 package org.fm.pimq.client.conf;
 
 import junit.framework.Assert;
+import org.fm.pimq.conf.Configuration;
+import org.fm.pimq.conf.ConfigurationProvider;
 import org.junit.Test;
 
 /**
- * Test class for {@link ConfigurationProvider}
+ * Test class for {@link org.fm.pimq.conf.ConfigurationProvider}
  * @author Fabio Marini
  */
 public class ConfigurationProviderTest {

@@ -14,6 +14,16 @@
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
+    <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:application.properties"/>
+    </bean>
+
+    <bean id="activemqConnectionProvieder" class="org.fm.pimq.activemq.ConnectionProvider"/>
+
+    <bean id="piPinServiceHelper" class="org.fm.pimq.server.helpers.PiPinServiceHelper">
+        <property name="connectionProviderStrategy" ref="activemqConnectionProvieder"/>
+    </bean>
+
     <cxf:bus>
         <cxf:features>
             <cxf:logging/>
@@ -26,6 +36,9 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
-    <bean id="piPinServiceBean" class="org.fm.pimq.server.impl.PiPinServiceImpl"/>
-
+    <bean id="piPinServiceBean" class="org.fm.pimq.server.impl.PiPinServiceImpl">
+        <property name="configurationFolderFullPath" value="${conf.folderFullPath}"/>
+        <property name="configurationFileName" value="${conf.fileName}"/>
+        <property name="piPinServiceHelper" ref="piPinServiceHelper" />
+    </bean>
 </beans>

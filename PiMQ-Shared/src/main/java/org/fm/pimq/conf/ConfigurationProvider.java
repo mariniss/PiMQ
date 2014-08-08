@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fm.pimq.client.conf;
+package org.fm.pimq.conf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +55,11 @@ public class ConfigurationProvider {
      * configuration separator
      */
     public static final String CONFIGURATION_FILE_SEPARATOR= "=";
+
+    /**
+     * Default JMS connection url
+     */
+    public static final String DEFAULT_SERVER_TYPE= "activemq";
 
     /**
      * Default JMS connection url
@@ -114,7 +119,7 @@ public class ConfigurationProvider {
     ************************************************************/
 
     /**
-     * Reads the configuration from file system and returns it as {@link org.fm.pimq.client.conf.Configuration}
+     * Reads the configuration from file system and returns it as {@link Configuration}
      * with the defaults for the mandatory configuration values not specified
      * @param configurationFolderFullPath full path folder that contains the configuration file, if is null the default value is used : {@link ConfigurationProvider#DEFAULT_CONFIGURATION_FOLDER_FULL_PATH}
      * @param configurationFileName configuration file name, if is null the default value is used : {@link ConfigurationProvider#DEFAULT_CONFIGURATION_FILE_NAME}
@@ -162,6 +167,9 @@ public class ConfigurationProvider {
     private void setConfigurationProperty(Configuration conf, String property, String value) {
         if(conf != null && property != null && value != null){
             switch (property){
+                case "org.fm.pimq.client.servertype":
+                    conf.setServerType(value);
+                    break;
                 case "org.fm.pimq.client.connection.url" :
                     conf.setConnectionUrl(value);
                     break;
@@ -177,6 +185,12 @@ public class ConfigurationProvider {
                 case "org.fm.pimq.client.states.queue" :
                     conf.setStatusQueueName(value);
                     break;
+                case "org.fm.pimq.client.ssl.username" :
+                    conf.setUsername(value);
+                    break;
+                case "org.fm.pimq.client.ssl.password" :
+                    conf.setPassword(value);
+                    break;
             }
         }
     }
@@ -187,6 +201,8 @@ public class ConfigurationProvider {
      */
     private void loadDefaults(Configuration conf) {
         if(conf != null){
+            conf.setServerType(DEFAULT_SERVER_TYPE);
+
             conf.setConnectionUrl(DEFAULT_CONNECTION_STRING);
 
             conf.setEnableCommandsMessages(DEFAULT_COMMANDS_ENABLE);
@@ -194,6 +210,9 @@ public class ConfigurationProvider {
 
             conf.setEnableStatesMessages(DEFAULT_STATES_ENABLE);
             conf.setStatusQueueName(DEFAULT_STATES_QUEUE_IDENTIFIER);
+
+            conf.setUsername(null);
+            conf.setPassword(null);
         }
     }
 }

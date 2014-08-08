@@ -21,6 +21,7 @@ import org.easymock.EasyMock;
 import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
+import org.fm.pimq.conf.Configuration;
 import org.fm.pimq.impl.PinMessageImpl;
 import org.junit.Test;
 
@@ -58,7 +59,11 @@ public class GPIOCommandsConsumerTest {
 
         // Starting instance to test
 
-        GPIOCommandsConsumerForTest consumer = new GPIOCommandsConsumerForTest(url, jmsQueue, controllerMock);
+        Configuration conf = new Configuration();
+        conf.setConnectionUrl(url);
+        conf.setCommandsQueueName(jmsQueue);
+        conf.setServerType("activemq");
+        GPIOCommandsConsumerForTest consumer = new GPIOCommandsConsumerForTest(conf, controllerMock);
         Thread brokerThread = new Thread(consumer);
         brokerThread.start();
 
@@ -98,7 +103,11 @@ public class GPIOCommandsConsumerTest {
 
         // Starting instance to test
 
-        GPIOCommandsConsumerForTest consumer = new GPIOCommandsConsumerForTest(url, jmsQueue, controllerMock);
+        Configuration conf = new Configuration();
+        conf.setConnectionUrl(url);
+        conf.setCommandsQueueName(jmsQueue);
+        conf.setServerType("activemq");
+        GPIOCommandsConsumerForTest consumer = new GPIOCommandsConsumerForTest(conf, controllerMock);
         Thread brokerThread = new Thread(consumer);
         brokerThread.start();
 
@@ -116,6 +125,8 @@ public class GPIOCommandsConsumerTest {
 
     private void sendMessage(IPinMessage command) {
         try {
+            //TODO: use the configuration provider
+
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
 
             QueueConnection queueConn = (QueueConnection) connectionFactory.createConnection();

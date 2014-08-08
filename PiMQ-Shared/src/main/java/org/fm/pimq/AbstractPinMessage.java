@@ -33,41 +33,25 @@ public abstract class AbstractPinMessage implements IPinMessage {
     protected PinStateMQ state;
 
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.fm.pimq.IPinMessage#getPin()
-     */
+    /** {@inheritDoc} */
     @Override
     public PinMQ getPin() {
         return this.pin;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.fm.pimq.IPinMessage#getState()
-     */
+    /** {@inheritDoc} */
     @Override
     public PinStateMQ getState() {
         return this.state;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.fm.pimq.IPinMessage#setPin()
-     */
+    /** {@inheritDoc} */
     @Override
     public void setPin(PinMQ pin) {
         this.pin = pin;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.fm.pimq.IPinMessage#setStateg()
-     */
+    /** {@inheritDoc} */
     @Override
     public void setState(PinStateMQ state) {
         this.state = state;

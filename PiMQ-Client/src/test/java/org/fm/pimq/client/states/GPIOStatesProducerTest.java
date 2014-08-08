@@ -23,6 +23,7 @@ import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
 import org.fm.pimq.client.commands.GPIOCommandsConsumerForTest;
+import org.fm.pimq.conf.Configuration;
 import org.fm.pimq.impl.PinMessageImpl;
 import org.junit.Test;
 
@@ -71,8 +72,11 @@ public class GPIOStatesProducerTest {
         EasyMock.replay(controllerMock, pinInMock);
 
         // Starting instance to test
-
-        GPIOStatesProducerForTest producer = new GPIOStatesProducerForTest(url, jmsQueue, controllerMock);
+        Configuration conf = new Configuration();
+        conf.setConnectionUrl(url);
+        conf.setStatusQueueName(jmsQueue);
+        conf.setServerType("activemq");
+        GPIOStatesProducerForTest producer = new GPIOStatesProducerForTest(conf, controllerMock);
         Thread brokerThread = new Thread(producer);
         brokerThread.start();
 

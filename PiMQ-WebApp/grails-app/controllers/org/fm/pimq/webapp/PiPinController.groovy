@@ -17,17 +17,12 @@ package org.fm.pimq.webapp
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
-import org.apache.commons.lang.NotImplementedException;
 import org.fm.pimq.IPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
 import org.fm.pimq.impl.PinMessageImpl
 
 import javax.jms.*;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
 /**
  * Rest controller to
  *

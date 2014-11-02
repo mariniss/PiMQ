@@ -47,7 +47,8 @@ public class PiMQServer {
         public void run() {
             try {
 
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("ssl://amqsrvtwo-easyiotconnect.rhcloud.com:2303");
+                //ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("http://ec2-54-77-129-207.eu-west-1.compute.amazonaws.com:61516");
 
                 RedeliveryPolicy policy = new RedeliveryPolicy();
                 policy.setInitialRedeliveryDelay(1000L);
@@ -55,7 +56,8 @@ public class PiMQServer {
 
                 connectionFactory.setRedeliveryPolicy(policy);
 
-                Connection connection = connectionFactory.createConnection("admin", "dsAMG-hcNehB");
+                //Connection connection = connectionFactory.createConnection();
+                Connection connection = connectionFactory.createConnection("fabio", "$2a$10$XEvV/Obo6PXHcEP3YgL1RuicDvyFUJ/m7FRFg4ovu5eOe1K0U39US");
 
                 connection.start();
 

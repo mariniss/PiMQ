@@ -54,7 +54,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <header>./LICENSE.txt</header>
+                    <header>LICENSE.txt</header>
                     <properties>
                         <owner>Fabio Marini</owner>
                         <email>fabio.marini@gmail.com</email>

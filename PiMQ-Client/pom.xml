@@ -15,6 +15,10 @@
 
     <name>JMS Client for Raspberry Pi</name>
 
+    <properties>
+        <cxf.version>3.0.0-milestone1</cxf.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -107,6 +111,33 @@
             <artifactId>easymock</artifactId>
             <version>3.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Necessary only for HTTP transport -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.7</version>
         </dependency>
     </dependencies>
 </project>

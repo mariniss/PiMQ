@@ -26,14 +26,13 @@
     </category>
 
     <logger name="javabeat.net.log4j" additivity="false">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="consoleAppender"/>
         <appender-ref ref="fileAppender"/>
     </logger>
 
     <root>
         <appender-ref ref="consoleAppender"/>
-        <appender-ref ref="fileAppender"/>
     </root>
 
 </log4j:configuration>

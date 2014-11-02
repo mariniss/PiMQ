@@ -15,10 +15,8 @@
  */
 package org.fm.pimq.server;
 
-import org.fm.pimq.server.dataobject.PiPin;
-
-import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import org.fm.pimq.server.dataobject.PiPin;
 
 /**
  * Basic REST service to send commands and request state of Raspberry Pi pins

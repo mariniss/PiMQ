@@ -13,3 +13,8 @@ PiMQ-WebApp/target
 PiMQ-WebApp/wrapper
 pimq.iml
 target
+PiMQ-Client/src/main/main.iml
+PiMQ-Client/src/test/test.iml
+PiMQ-Server/src/main/main1.iml
+PiMQ-Shared/src/main/main2.iml
+PiMQ-WebApp/PiMQ-WebApp.iml

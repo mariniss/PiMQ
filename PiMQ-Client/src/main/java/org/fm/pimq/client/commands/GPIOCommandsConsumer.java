@@ -96,7 +96,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
             MessageConsumer consumer = session.createConsumer(destination);
 
-            logger.info(" Starting main loop ");
+            logger.info(" Starting commands consumer main loop ");
 
             for ( ; ; ) {
                 Message message = consumer.receive();
@@ -106,7 +106,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
                     StringBuilder errorMsg = new StringBuilder();
                     if (isValidCommand(commandMessage, errorMsg)) {
-                        logger.debug("Received: " + commandMessage.getPin().getPinNumber() + " : " + commandMessage.getState().name());
+                        logger.debug("Received command for Pin: " + commandMessage.getPin().getPinNumber() + " - State: " + commandMessage.getState().name());
 
                         executeCommand(commandMessage);
                     } else {
@@ -151,7 +151,7 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
             return false;
         }
 
-        if (commandMessage.getPin().getPinNumber() < 1 || commandMessage.getPin().getPinNumber() > 20) {
+        if (commandMessage.getPin().getPinNumber() < 0 || commandMessage.getPin().getPinNumber() > 20) {
             errorMsg.append("Pin number must be from 1 to 20");
             return false;
         }

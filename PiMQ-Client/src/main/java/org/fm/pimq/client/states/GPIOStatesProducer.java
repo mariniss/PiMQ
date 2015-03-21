@@ -285,7 +285,7 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
                 throw new IllegalArgumentException("Configuration cannot be null");
             }
 
-            //TODO: Extend the strategy pattern to give the possibility to add RedeliveryPolicy whit decoratir pattern
+            //TODO: Extend the strategy pattern to give the possibility to add RedeliveryPolicy whit decorator pattern
 //            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(connectionUrl);
 //            RedeliveryPolicy policy = new RedeliveryPolicy();
 //            policy.setInitialRedeliveryDelay(1000L);

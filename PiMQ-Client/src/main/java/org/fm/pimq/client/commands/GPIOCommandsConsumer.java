@@ -362,6 +362,9 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
         Pin pipin;
 
         switch (commandMessage.getPin().getPinNumber()) {
+            case 0:
+                pipin = RaspiPin.GPIO_00;
+                break;
             case 1:
                 pipin = RaspiPin.GPIO_01;
                 break;

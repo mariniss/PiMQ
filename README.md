@@ -43,8 +43,3 @@ To install are necessary:
 1. MySql RDBMS, or similar (Postgress)
 1. Install Apache Tomcat (or similar) on a remote server or your pc
 2. Copy PiMQ WebApp war (/PiMQ/PiMQ-Webapp/target/org.fm.pimq.webapp-0.1-SNAPSHOT.war) to webapps root directory. If you are using tomcat the directory is : `` apache-tomcat-x.x.x/webapps ``
-
-Usage
--------
-
-## TODO... 

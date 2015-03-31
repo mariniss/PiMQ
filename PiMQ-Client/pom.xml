@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.fm.pimq</groupId>
             <artifactId>org.fm.pimq.shared</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>

@@ -99,23 +99,28 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
             logger.info(" Starting commands consumer main loop ");
 
             for ( ; ; ) {
-                Message message = consumer.receive();
+                try {
+                    Message message = consumer.receive();
 
-                if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
-                    IPinMessage commandMessage = (IPinMessage) ((ActiveMQObjectMessage) message).getObject();
+                    if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
+                        IPinMessage commandMessage = (IPinMessage) ((ActiveMQObjectMessage) message).getObject();
 
-                    StringBuilder errorMsg = new StringBuilder();
-                    if (isValidCommand(commandMessage, errorMsg)) {
-                        logger.debug("Received command for Pin: " + commandMessage.getPin().getPinNumber() + " - State: " + commandMessage.getState().name());
+                        StringBuilder errorMsg = new StringBuilder();
+                        if (isValidCommand(commandMessage, errorMsg)) {
+                            logger.debug("Received command for Pin: " + commandMessage.getPin().getPinNumber() + " - State: " + commandMessage.getState().name());
 
-                        executeCommand(commandMessage);
+                            executeCommand(commandMessage);
+                        } else {
+                            logger.error("Received invalid command : " + errorMsg.toString());
+                        }
+
                     } else {
-                        logger.error("Received invalid command : " + errorMsg.toString());
+                        logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
+                        break;
                     }
-
-                } else {
-                    logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
-                    break;
+                }
+                catch (JMSException exc) {
+                    logger.warn ("caught JMSException, most likely a timeout continuing main loop", exc);
                 }
             }
 

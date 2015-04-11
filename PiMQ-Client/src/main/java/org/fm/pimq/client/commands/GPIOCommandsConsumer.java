@@ -96,38 +96,34 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
             MessageConsumer consumer = session.createConsumer(destination);
 
-            logger.info(" Starting commands consumer main loop ");
+            logger.info("into commands consumer main loop...");
 
             for ( ; ; ) {
-                try {
-                    Message message = consumer.receive();
+                Message message = consumer.receive();
 
-                    if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
-                        IPinMessage commandMessage = (IPinMessage) ((ActiveMQObjectMessage) message).getObject();
+                if (((ActiveMQObjectMessage) message).getObject() instanceof IPinMessage) {
+                    IPinMessage commandMessage = (IPinMessage) ((ActiveMQObjectMessage) message).getObject();
 
-                        StringBuilder errorMsg = new StringBuilder();
-                        if (isValidCommand(commandMessage, errorMsg)) {
-                            logger.debug("Received command for Pin: " + commandMessage.getPin().getPinNumber() + " - State: " + commandMessage.getState().name());
+                    StringBuilder errorMsg = new StringBuilder();
+                    if (isValidCommand(commandMessage, errorMsg)) {
+                        logger.debug("Received command for Pin: " + commandMessage.getPin().getPinNumber() + " - State: " + commandMessage.getState().name());
 
-                            executeCommand(commandMessage);
-                        } else {
-                            logger.error("Received invalid command : " + errorMsg.toString());
-                        }
-
+                        executeCommand(commandMessage);
                     } else {
-                        logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
-                        break;
+                        logger.error("Received invalid command : " + errorMsg.toString());
                     }
+
+                } else {
+                    logger.error("Received JMS messages that is not a IPinMessage. Main loop ended");
+                    break;
                 }
-                catch (JMSException exc) {
-                    logger.warn ("caught JMSException, most likely a timeout continuing main loop", exc);
-                }
+
+                message = null;
             }
 
             consumer.close();
             session.close();
             connection.close();
-
         } catch (Exception e) {
             logger.error("Caught: " + e);
         }
@@ -278,9 +274,9 @@ public class GPIOCommandsConsumer implements Runnable, ExceptionListener {
 
     /** {@inheritDoc} */
     @Override
-    public void onException(JMSException exception) {
-        logger.error("JMS Exception occurred.  Shutting down client.");
-        System.out.print("JMS Exception occurred.  Shutting down client.");
-        exception.printStackTrace();
+    public void onException(JMSException exc) {
+        logger.warn("caught JMSException, most likely a timeout continuing main loop", exc);
+
+        this.run();
     }
 }

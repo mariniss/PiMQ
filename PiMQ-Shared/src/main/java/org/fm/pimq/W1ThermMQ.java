@@ -15,29 +15,51 @@
  */
 package org.fm.pimq;
 
+import java.io.Serializable;
 
 /**
- * This interface defines a generic command that you can send/receive to/from Raspberry Pi
+ * Define the W1 Therm Raspberry Pi data to be sent by JMS
  *
  * @author Fabio Marini
  */
-public interface IPinCommand   {
+public class W1ThermMQ implements Serializable {
+
+    private Float therm;
+
 
     /**
-     * Sets the pin of command
-     * @param pin the raspberry pin
+     * Default constructor
      */
-    public void setPin(PinMQ pin);
+    public W1ThermMQ() {
+    }
+
 
     /**
-     * Sets the state of command
-     * @param state the pin state
+     * Build the object with the given therm data
+     *
+     * @param therm the therm data
      */
-    public void setState(PinStateMQ state);
+    public W1ThermMQ(Float therm) {
+        this();
+
+        this.therm = therm;
+    }
+
 
     /**
-     * Sets the W1-Therm data
-     * @param data the data to set
+     * Rertun the w1-therm data
+     * @return w1-therm data
      */
-    public void setW1Data(W1ThermMQ data);
+    public Float getTherm() {
+        return therm;
+    }
+
+
+    /**
+     * Sets the w1-therm data
+     * @param therm the therm data to set
+     */
+    public void setTherm(Float therm) {
+        this.therm = therm;
+    }
 }

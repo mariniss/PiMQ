@@ -26,17 +26,31 @@ public class Configuration {
 
     private String connectionUrl;
 
+    private Long messagesTimeToLive;
+
     private boolean enableCommandsMessages;
 
     private String commandsQueueName;
 
-    private boolean isEnableStatesMessages;
+    private boolean enableStatesMessages;
 
     private String statusQueueName;
 
     private String username;
 
     private String password;
+
+    private boolean enableW1BusMessages;
+
+    private Long w1BusMessagesRefresh;
+
+    private String w1DirPath;
+
+    private String w1DevicesPrefix;
+
+    private String w1QueueName;
+
+    private String w1RequestsQueueName;
 
     /**
      * Default constructor
@@ -61,6 +75,14 @@ public class Configuration {
         this.connectionUrl = connectionUrl;
     }
 
+    public Long getMessagesTimeToLive() {
+        return messagesTimeToLive;
+    }
+
+    public void setMessagesTimeToLive(Long messagesTimeToLive) {
+        this.messagesTimeToLive = messagesTimeToLive;
+    }
+
     public boolean isEnableCommandsMessages() {
         return enableCommandsMessages;
     }
@@ -78,11 +100,11 @@ public class Configuration {
     }
 
     public boolean isEnableStatesMessages() {
-        return isEnableStatesMessages;
+        return enableStatesMessages;
     }
 
     public void setEnableStatesMessages(boolean isEnableStatesMessages) {
-        this.isEnableStatesMessages = isEnableStatesMessages;
+        this.enableStatesMessages = isEnableStatesMessages;
     }
 
     public String getStatusQueueName() {
@@ -109,6 +131,54 @@ public class Configuration {
         this.password = password;
     }
 
+    public boolean isEnableW1BusMessages() {
+        return enableW1BusMessages;
+    }
+
+    public void setEnableW1BusMessages(boolean enableW1BusMessages) {
+        this.enableW1BusMessages = enableW1BusMessages;
+    }
+
+    public String getW1DirPath() {
+        return w1DirPath;
+    }
+
+    public void setW1DirPath(String w1DirPath) {
+        this.w1DirPath = w1DirPath;
+    }
+
+    public Long getW1BusMessagesRefresh() {
+        return w1BusMessagesRefresh;
+    }
+
+    public void setW1BusMessagesRefresh(Long w1BusMessagesRefresh) {
+        this.w1BusMessagesRefresh = w1BusMessagesRefresh;
+    }
+
+    public String getW1DevicesPrefix() {
+        return w1DevicesPrefix;
+    }
+
+    public void setW1DevicesPrefix(String w1DevicesPrefix) {
+        this.w1DevicesPrefix = w1DevicesPrefix;
+    }
+
+    public String getW1QueueName() {
+        return w1QueueName;
+    }
+
+    public String getW1RequestsQueueName() {
+        return w1RequestsQueueName;
+    }
+
+    public void setW1RequestsQueueName(String w1RequestsQueueName) {
+        this.w1RequestsQueueName = w1RequestsQueueName;
+    }
+
+    public void setW1QueueName(String w1QueueName) {
+        this.w1QueueName = w1QueueName;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -117,12 +187,19 @@ public class Configuration {
         return "Configuration{" +
                 "serverType='" + serverType + '\'' +
                 ", connectionUrl='" + connectionUrl + '\'' +
+                ", messagesTimeToLive=" + messagesTimeToLive +
                 ", enableCommandsMessages=" + enableCommandsMessages +
                 ", commandsQueueName='" + commandsQueueName + '\'' +
-                ", isEnableStatesMessages=" + isEnableStatesMessages +
+                ", enableStatesMessages=" + enableStatesMessages +
                 ", statusQueueName='" + statusQueueName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", enableW1BusMessages=" + enableW1BusMessages +
+                ", w1BusMessagesRefresh=" + w1BusMessagesRefresh +
+                ", w1DirPath='" + w1DirPath + '\'' +
+                ", w1DevicesPrefix='" + w1DevicesPrefix + '\'' +
+                ", w1QueueName='" + w1QueueName + '\'' +
+                ", w1RequestsQueueName='" + w1RequestsQueueName + '\'' +
                 '}';
     }
 }

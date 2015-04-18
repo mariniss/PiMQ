@@ -15,6 +15,7 @@
  */
 package org.fm.pimq;
 
+
 /**
  * Base implementation of {@link IPinMessage}
  *
@@ -31,6 +32,12 @@ public abstract class AbstractPinMessage implements IPinMessage {
      * The pin state to set/receive command
      */
     protected PinStateMQ state;
+
+
+    /**
+     * The w1-therm data
+     */
+    protected W1ThermMQ therm;
 
 
     /** {@inheritDoc} */
@@ -55,5 +62,17 @@ public abstract class AbstractPinMessage implements IPinMessage {
     @Override
     public void setState(PinStateMQ state) {
         this.state = state;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setW1Data(W1ThermMQ data) {
+        this.therm = data;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public W1ThermMQ getW1Data() {
+        return this.therm;
     }
 }

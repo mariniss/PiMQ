@@ -96,13 +96,6 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
                 throw new IllegalArgumentException("Configuration cannot be null");
             }
 
-            //TODO: Extend the strategy pattern to give the possibility to add RedeliveryPolicy whit decorator pattern
-//            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(connectionUrl);
-//            RedeliveryPolicy policy = new RedeliveryPolicy();
-//            policy.setInitialRedeliveryDelay(1000L);
-//            policy.setMaximumRedeliveries(RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES);
-//            connectionFactory.setRedeliveryPolicy(policy);
-
             IConnectionProviderStrategy connectionProvider = ConnectionProvidersRepository.getConnectionStrategy(configuration.getServerType());
             Connection connection = connectionProvider.createConnection(configuration);
 
@@ -125,6 +118,7 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
                     @Override
                     public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                         logger.debug(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+
                         try {
                             sendStatusMessage(event);
                         } catch (JMSException e) {
@@ -135,9 +129,8 @@ public class GPIOStatesProducer implements Runnable, ExceptionListener {
                 });
             }
 
-            // keep program running until user aborts (CTRL-C)
-            for (;;) {
-                Thread.sleep(500);
+            for ( ; ; ) {
+                Thread.sleep(60000);
             }
 
             // Clean up - not necessary

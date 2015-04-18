@@ -33,12 +33,12 @@ To install are necessary:
 
 1. Install Apache ActiveMQ on a remote server, your pc or your Raspberry Pi, see [http://activemq.apache.org/installation.html](http://activemq.apache.org/installation.html)
 
-## REST server (optional)
+## REST server (optional) - NO LONGER MAINTAINED
 
 1. Install Apache Tomcat (or similar) on a remote server or your pc
 2. Copy PiMQ server (/PiMQ/PiMQ-Server/target/org.fm.pimq.server-0.1-SNAPSHOT.war) to webapps root directory. If you are using tomcat the directory is : `` apache-tomcat-x.x.x/webapps ``
 
-## Web application (optional)
+## Web application (optional) - NO LONGER MAINTAINED
 
 1. MySql RDBMS, or similar (Postgress)
 1. Install Apache Tomcat (or similar) on a remote server or your pc

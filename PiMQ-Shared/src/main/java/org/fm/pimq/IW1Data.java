@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fm.pimq.webapp
+package org.fm.pimq;
 
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+import java.io.Serializable;
 
 /**
- * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ * This interface defines a W1-Therm data from Raspberry Pi W1-Therm bus
+ *
+ * @author Fabio Marini
  */
-@TestFor(PiPin)
-class PiPinSpec extends Specification {
+public interface IW1Data extends Serializable {
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
-    void "test something"() {
-    }
+    /**
+     * Returns the W1-Them data present on the W1-Therm bus
+     * @return the W1-Them data
+     */
+    W1ThermMQ getW1Data();
 }

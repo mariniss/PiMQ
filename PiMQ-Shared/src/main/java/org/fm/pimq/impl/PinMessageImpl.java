@@ -18,8 +18,11 @@ package org.fm.pimq.impl;
 import org.fm.pimq.AbstractPinMessage;
 import org.fm.pimq.PinMQ;
 import org.fm.pimq.PinStateMQ;
+import org.fm.pimq.W1ThermMQ;
 
 /**
+ * Concrete implementation of AbstractPinMessage
+ *
  * @author Fabio Marini
  */
 public class PinMessageImpl extends AbstractPinMessage {
@@ -32,10 +35,30 @@ public class PinMessageImpl extends AbstractPinMessage {
     /**
      * Build the object with the given values
      * @param pin the raspberry pin
+     */
+    public PinMessageImpl(PinMQ pin) {
+        setPin(pin);
+    }
+
+
+    /**
+     * Build the object with the given values
+     * @param pin the raspberry pin
      * @param state the pin status
      */
     public PinMessageImpl(PinMQ pin, PinStateMQ state) {
         setPin(pin);
         setState(state);
+    }
+
+
+    /**
+     * Build the object with the given values
+     * @param pin the raspberry pin
+     * @param therm the pin w1 therm data
+     */
+    public PinMessageImpl(PinMQ pin, W1ThermMQ therm) {
+        setPin(pin);
+        setW1Data(therm);
     }
 }

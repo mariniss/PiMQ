@@ -16,7 +16,9 @@
 package org.fm.pimq;
 
 /**
+ * The interface to define a generic messat o send/receive from/to Raspberry Pi
+ *
  * @author Fabio Marini
  */
-public interface IPinMessage extends IPinStatus, IPinCommand {
+public interface IPinMessage extends IPinStatus, IPinCommand, IW1Data {
 }

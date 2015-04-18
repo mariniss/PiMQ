@@ -64,6 +64,11 @@ public class ConfigurationProvider {
     /**
      * Default JMS connection url
      */
+    public static final Long DEFAULT_MESSAGES_TIME_TO_LIVE = 60000L;
+
+    /**
+     * Default JMS connection url
+     */
     public static final String DEFAULT_CONNECTION_STRING = "tcp://localhost:61616";
 
     /**
@@ -85,6 +90,37 @@ public class ConfigurationProvider {
      * Default flag value to enable/disable GPIO states producer
      */
     public static final boolean DEFAULT_STATES_ENABLE = false;
+
+    /**
+     * Default flag value to enable/disable w1 bus consumer
+     */
+    public static final boolean DEFAULT_W1_ENABLE = true;
+
+    /**
+     * Default refresh time to read data from w1 bus
+     */
+    public static final long DEFAULT_W1_REFRESH_TIME = 60;
+
+    /**
+     * Default path for w1 bus
+     */
+    public static  final String DEFAULT_W1BUS_DIRPATH = "/sys/bus/w1/devices";
+
+    /**
+     * Default prefix for W1-Therm devices
+     */
+    public static  final String DEFAULT_W1BUS_DEVICES_PREFIX = "28-";
+
+    /**
+     * Default queue name for W1-Therm data
+     */
+    public static  final String DEFAULT_W1_QUEUE_IDENTIFIER = "PiMQ.GPIO.w1";
+
+
+    /**
+     * Default queue name for W1-Therm data requests
+     */
+    public static  final String DEFAULT_W1_REQUESTS_QUEUE_IDENTIFIER = "PiMQ.GPIO.w1.requests";
 
     /************************************************************
      *          Singleton implementation - start
@@ -173,6 +209,9 @@ public class ConfigurationProvider {
                 case "org.fm.pimq.client.connection.url" :
                     conf.setConnectionUrl(value);
                     break;
+                case "org.fm.pimq.client.msg.ttl":
+                    conf.setMessagesTimeToLive(Long.valueOf(value));
+                    break;
                 case "org.fm.pimq.client.commands.enable" :
                     conf.setEnableCommandsMessages(Boolean.valueOf(value));
                     break;
@@ -191,6 +230,24 @@ public class ConfigurationProvider {
                 case "org.fm.pimq.client.ssl.password" :
                     conf.setPassword(value);
                     break;
+                case "org.fm.pimq.client.w1bus.enable" :
+                    conf.setEnableW1BusMessages(Boolean.valueOf(value));
+                    break;
+                case "org.fm.pimq.client.w1bus.refresh.time" :
+                    conf.setW1BusMessagesRefresh(Long.valueOf(value));
+                    break;
+                case "org.fm.pimq.client.w1bus.path" :
+                    conf.setW1DirPath(value);
+                    break;
+                case "org.fm.pimq.client.w1bus.devics.prefix" :
+                    conf.setW1DevicesPrefix(value);
+                    break;
+                case "org.fm.pimq.client.w1bus.queue" :
+                    conf.setW1QueueName(value);
+                    break;
+                case "org.fm.pimq.client.w1bus.requests.queue" :
+                    conf.setW1RequestsQueueName(value);
+                    break;
             }
         }
     }
@@ -205,11 +262,20 @@ public class ConfigurationProvider {
 
             conf.setConnectionUrl(DEFAULT_CONNECTION_STRING);
 
+            conf.setMessagesTimeToLive(DEFAULT_MESSAGES_TIME_TO_LIVE);
+
             conf.setEnableCommandsMessages(DEFAULT_COMMANDS_ENABLE);
             conf.setCommandsQueueName(DEFAULT_COMMAND_QUEUE_IDENTIFIER);
 
             conf.setEnableStatesMessages(DEFAULT_STATES_ENABLE);
             conf.setStatusQueueName(DEFAULT_STATES_QUEUE_IDENTIFIER);
+
+            conf.setEnableW1BusMessages(DEFAULT_W1_ENABLE);
+            conf.setW1BusMessagesRefresh(DEFAULT_W1_REFRESH_TIME);
+            conf.setW1DirPath(DEFAULT_W1BUS_DIRPATH);
+            conf.setW1DevicesPrefix(DEFAULT_W1BUS_DEVICES_PREFIX);
+            conf.setW1QueueName(DEFAULT_W1_QUEUE_IDENTIFIER);
+            conf.setW1RequestsQueueName(DEFAULT_W1_REQUESTS_QUEUE_IDENTIFIER);
 
             conf.setUsername(null);
             conf.setPassword(null);

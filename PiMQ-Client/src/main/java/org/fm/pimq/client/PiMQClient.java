@@ -16,11 +16,16 @@
 package org.fm.pimq.client;
 
 import org.fm.pimq.client.commands.GPIOCommandsConsumer;
+import org.fm.pimq.client.w1.W1BusRequestsConsumer;
 import org.fm.pimq.conf.Configuration;
 import org.fm.pimq.conf.ConfigurationProvider;
 import org.fm.pimq.client.states.GPIOStatesProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class that implements the client-side logic to manage JMS input.
@@ -63,16 +68,26 @@ public class PiMQClient {
         logger.debug("Loaded configuration: {}", configuration);
 
         if(configuration.isEnableCommandsMessages()) {
+            logger.info("starting commands consumer main loop...");
+
             thread(new GPIOCommandsConsumer(configuration), false);
         }
 
         if(configuration.isEnableStatesMessages()) {
+            logger.info("starting status produce main loop...");
+
             thread(new GPIOStatesProducer(configuration), false);
+        }
+
+        if(configuration.isEnableW1BusMessages()) {
+            logger.info("Staring w1 bus consumer main loop...");
+
+            thread(new W1BusRequestsConsumer(configuration), false);
         }
     }
 
     /**
-     * Create a new thread the the given runnnable instance
+     * Create a new thread with the given runnnable instance
      * @param runnable the instance to run
      * @param daemon true if will be a system deamon
      */
@@ -80,5 +95,20 @@ public class PiMQClient {
         Thread processThread = new Thread(runnable);
         processThread.setDaemon(daemon);
         processThread.start();
+    }
+
+    /**
+     * Create a new thread with the given runnnable instance to schedule every specified amount of seconds
+     * @param runnable the instance to run
+     * @param daemon true if will be a system deamon
+     * @param delay the second to wait before start the thread
+     * @param seconds the second rate every the thread is executed
+     */
+    public static void scheduledThread(Runnable runnable, boolean daemon, Long delay, Long seconds) {
+        Thread processThread = new Thread(runnable);
+        processThread.setDaemon(daemon);
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(processThread, delay, seconds, TimeUnit.SECONDS);
     }
 }
